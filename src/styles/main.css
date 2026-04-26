@@ -3,6 +3,13 @@
   text-align: center;
 }
 
+.description {
+  text-align: center;
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
 textarea {
   width: 95%;
   min-height: 180px;
