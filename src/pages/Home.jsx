@@ -2,22 +2,48 @@ import { useState } from "react";
 import { generateCoverLetter } from "../services/api";
 import '../styles/main.css'
 import { downloadDocx } from "../utils/downloadDocs";
+import { extractTextFromPDF } from "../utils/extractPdf";
+//import { extractTextFromDocx } from "../utils/extractDocx";
+
 export default function Home() {
   const [jobDescription, setJobDescription] = useState("");
   const [linkedIn_summary, setLinkedInSummary] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [resumeText, setResumeText] = useState("");
+  const [fileName, setFileName] = useState("");
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const data = await generateCoverLetter(jobDescription, linkedIn_summary);
+      const data = await generateCoverLetter(jobDescription, resumeText);
       setResult(data.cover_letter);
     } catch (err) {
       console.error(err);
     }
     setLoading(false);
   };
+
+  const handleFileUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  setFileName(file.name); 
+  let text = "";
+
+  if (file.type === "application/pdf") {
+    text = await extractTextFromPDF(file);
+  } 
+  // else if (
+  //   file.type ===
+  //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  // ) {
+  //   text = await extractTextFromDocx(file);
+  // } 
+  else {
+    alert("Only PDF Files allowed");
+    return;
+  }
+  setResumeText(text);
+};
 
 return (
   <div className="container">
@@ -33,13 +59,37 @@ return (
         value={jobDescription}
         onChange={(e) => setJobDescription(e.target.value)}
       />
+
     <br />
     <br />
-      <textarea type="text" placeholder="LinkedIn profile Summary" 
+      {/* <textarea type="text" placeholder="LinkedIn profile Summary" 
        value={linkedIn_summary}
        onChange={(e) => setLinkedInSummary(e.target.value)}
-      />
+      /> */}
 
+      <div className="file-upload">
+      <label htmlFor="fileInput" className="file-label">
+       Upload CV (PDF Only)
+      </label>
+
+  <input
+    id="fileInput"
+    type="file"
+    accept=".pdf,.docx"
+    onChange={handleFileUpload}
+  />
+
+   {fileName && (
+    <p className="file-name">
+    📄 {fileName}
+    </p>
+  )}
+
+  {resumeText && (
+    <p className="file-success">✅ Resume uploaded successfully</p>
+  )}
+</div>
+      <br />
       <button onClick={handleGenerate} disabled={loading}>
         {loading ? "Generating..." : "Generate Cover Letter"}
       </button>
