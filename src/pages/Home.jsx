@@ -3,11 +3,10 @@ import { generateCoverLetter } from "../services/api";
 import '../styles/main.css'
 import { downloadDocx } from "../utils/downloadDocs";
 import { extractTextFromPDF } from "../utils/extractPdf";
-//import { extractTextFromDocx } from "../utils/extractDocx";
+
 
 export default function Home() {
   const [jobDescription, setJobDescription] = useState("");
-  const [linkedIn_summary, setLinkedInSummary] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [resumeText, setResumeText] = useState("");
@@ -31,13 +30,7 @@ export default function Home() {
 
   if (file.type === "application/pdf") {
     text = await extractTextFromPDF(file);
-  } 
-  // else if (
-  //   file.type ===
-  //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-  // ) {
-  //   text = await extractTextFromDocx(file);
-  // } 
+  }  
   else {
     alert("Only PDF Files allowed");
     return;
@@ -62,15 +55,11 @@ return (
 
     <br />
     <br />
-      {/* <textarea type="text" placeholder="LinkedIn profile Summary" 
-       value={linkedIn_summary}
-       onChange={(e) => setLinkedInSummary(e.target.value)}
-      /> */}
-
-      <div className="file-upload">
-      <label htmlFor="fileInput" className="file-label">
-       Upload CV (PDF Only)
-      </label>
+      
+    <div className="file-upload">
+    <label htmlFor="fileInput" className="file-label">
+     Upload CV (PDF Only)
+    </label>
 
   <input
     id="fileInput"
